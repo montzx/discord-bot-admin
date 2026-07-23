@@ -7,7 +7,6 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('sticky')
     .setDescription('Manajemen Sticky Message agar selalu di bagian paling bawah channel')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     // Subcommand: create
     .addSubcommand(sub =>
       sub.setName('create')

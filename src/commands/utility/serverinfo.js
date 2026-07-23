@@ -4,8 +4,7 @@ const ModernEmbedBuilder = require('../../embeds/embedBuilder');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('serverinfo')
-    .setDescription('Menampilkan informasi rinci mengenai server ini')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDescription('Menampilkan informasi rinci mengenai server ini'),
 
   async execute(interaction) {
     const guild = interaction.guild;

@@ -4,8 +4,7 @@ const ModernEmbedBuilder = require('../../embeds/embedBuilder');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('ping')
-    .setDescription('Memeriksa latensi dan kecepatan respon bot')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDescription('Memeriksa latensi dan kecepatan respon bot'),
 
   async execute(interaction) {
     const sent = await interaction.reply({ content: '⚡ Memeriksa latensi...', fetchReply: true, ephemeral: true });

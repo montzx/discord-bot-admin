@@ -7,7 +7,6 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('logs')
     .setDescription('Pengaturan dan sistem Audit Log Server')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     // Subcommand: setup
     .addSubcommand(sub =>
       sub.setName('setup')

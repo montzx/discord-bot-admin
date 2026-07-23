@@ -7,7 +7,6 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('welcome')
     .setDescription('Pengaturan dan manajemen sistem Welcome Member Baru')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     // Subcommand: setup
     .addSubcommand(sub =>
       sub.setName('setup')

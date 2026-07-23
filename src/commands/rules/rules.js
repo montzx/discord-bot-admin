@@ -7,7 +7,6 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('rules')
     .setDescription('Pengaturan dan manajemen Rules Embed Server')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     // Subcommand: setup
     .addSubcommand(sub =>
       sub.setName('setup')

@@ -5,8 +5,7 @@ const os = require('os');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('botinfo')
-    .setDescription('Menampilkan informasi rinci dan statistik sistem bot')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDescription('Menampilkan informasi rinci dan statistik sistem bot'),
 
   async execute(interaction) {
     const client = interaction.client;

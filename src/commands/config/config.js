@@ -6,8 +6,7 @@ const logger = require('../../utils/logger');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('config')
-    .setDescription('Menampilkan seluruh ringkasan konfigurasi bot di server ini')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDescription('Menampilkan seluruh ringkasan konfigurasi bot di server ini'),
 
   async execute(interaction) {
     const guildId = interaction.guild.id;
