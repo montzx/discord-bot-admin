@@ -27,20 +27,29 @@ module.exports = {
       try {
         logger.info(`Registering ${client.commandArray.length} Slash Command(s)...`);
 
-        // 1. Register all 8 commands globally
+        // 1. Clear Global commands to eliminate duplicates in Discord UI
         await rest.put(
           Routes.applicationCommands(appId),
-          { body: client.commandArray }
-        );
-        logger.info(`Successfully registered ${client.commandArray.length} Slash Commands Globally.`);
+          { body: [] }
+        ).catch(() => {});
+        logger.info('Cleared Global Commands (preventing duplicates).');
 
-        // 2. Register to specific private guild for instant update if GUILD_ID is set
+        // 2. Register all 8 commands to Guild level for instant update
         if (config.guildId) {
           await rest.put(
             Routes.applicationGuildCommands(appId, config.guildId),
             { body: client.commandArray }
           );
           logger.info(`Successfully registered ${client.commandArray.length} Slash Commands to Guild ID: ${config.guildId}`);
+        } else {
+          // If no GUILD_ID specified, register to all connected guilds
+          for (const [guildId, guild] of client.guilds.cache) {
+            await rest.put(
+              Routes.applicationGuildCommands(appId, guildId),
+              { body: client.commandArray }
+            ).catch(err => logger.error(`Failed to register to guild ${guildId}:`, err));
+            logger.info(`Successfully registered ${client.commandArray.length} Slash Commands to Guild: ${guild.name} (${guildId})`);
+          }
         }
       } catch (error) {
         logger.error('Error registering slash commands:', error);
