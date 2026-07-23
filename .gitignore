@@ -9,7 +9,7 @@ node_modules/
 *.sqlite
 *.sqlite3
 *.db
-database/
+/database/
 
 # Logs
 /logs/
