@@ -34,21 +34,16 @@ module.exports = {
         ).catch(() => {});
         logger.info('Cleared Global Commands (preventing duplicates).');
 
-        // 2. Register all 8 commands to Guild level for instant update
-        if (config.guildId) {
-          await rest.put(
-            Routes.applicationGuildCommands(appId, config.guildId),
-            { body: client.commandArray }
-          );
-          logger.info(`Successfully registered ${client.commandArray.length} Slash Commands to Guild ID: ${config.guildId}`);
-        } else {
-          // If no GUILD_ID specified, register to all connected guilds
-          for (const [guildId, guild] of client.guilds.cache) {
+        // 2. Register all 8 commands to ALL connected guilds instantly
+        for (const [guildId, guild] of client.guilds.cache) {
+          try {
             await rest.put(
               Routes.applicationGuildCommands(appId, guildId),
               { body: client.commandArray }
-            ).catch(err => logger.error(`Failed to register to guild ${guildId}:`, err));
+            );
             logger.info(`Successfully registered ${client.commandArray.length} Slash Commands to Guild: ${guild.name} (${guildId})`);
+          } catch (gErr) {
+            logger.error(`Failed to register commands to Guild ${guild.name} (${guildId}):`, gErr);
           }
         }
       } catch (error) {
