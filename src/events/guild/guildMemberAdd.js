@@ -32,27 +32,7 @@ module.exports = {
             footerText: `Member #${guild.memberCount} • Welcome`
           });
 
-          const embedsToSend = [welcomeEmbed];
-
-          // Attach Full Rules Embed automatically if Rules are configured in database
-          if (rulesData && rulesData.rules_list) {
-            const rulesListFormatted = rulesData.rules_list
-              .split(';')
-              .map((r, i) => `📌 **Peraturan #${i + 1}**\n${r.trim()}`)
-              .join('\n\n');
-
-            const fullRulesEmbed = ModernEmbedBuilder.baseEmbed({
-              color: 0x3498DB,
-              title: rulesData.title || '📜 PERATURAN SERVER',
-              description: rulesData.description ? `${rulesData.description}\n\n${rulesListFormatted}` : rulesListFormatted,
-              imageUrl: rulesData.image_url || null,
-              footerText: 'Server Rules • Patuhi Peraturan yang Berlaku'
-            });
-
-            embedsToSend.push(fullRulesEmbed);
-          }
-
-          await welcomeChannel.send({ content: `${member}`, embeds: embedsToSend }).catch(() => {});
+          await welcomeChannel.send({ content: `${member}`, embeds: [welcomeEmbed] }).catch(() => {});
         }
       }
 
