@@ -1,0 +1,22 @@
+# Node dependencies
+node_modules/
+
+# Environment files
+.env
+*.env
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+database/
+
+# Logs
+logs/
+*.log
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

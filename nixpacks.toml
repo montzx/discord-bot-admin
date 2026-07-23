@@ -1,0 +1,6 @@
+# Nixpacks build configuration for Railway
+[variables]
+NIXPACKS_NODE_VERSION = "22"
+
+[phases.setup]
+nixPkgs = ["nodejs_22", "python3", "gcc", "gnumake"]
