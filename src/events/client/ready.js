@@ -27,13 +27,17 @@ module.exports = {
       try {
         logger.info(`Registering ${client.commandArray.length} Slash Command(s)...`);
 
-        if (config.guildId) {
-          // Register to private guild immediately (instant update)
-          await rest.put(
-            Routes.applicationGuildCommands(appId, config.guildId),
-            { body: client.commandArray }
-          );
-          logger.info(`Successfully registered ${client.commandArray.length} Slash Commands to Guild ID: ${config.guildId}`);
+        // Register instantly to ALL joined guilds
+        for (const [guildId, guild] of client.guilds.cache) {
+          try {
+            await rest.put(
+              Routes.applicationGuildCommands(appId, guildId),
+              { body: client.commandArray }
+            );
+            logger.info(`Successfully registered ${client.commandArray.length} Slash Commands to Guild: ${guild.name} (${guildId})`);
+          } catch (gErr) {
+            logger.error(`Failed to register commands to Guild ${guildId}:`, gErr);
+          }
         }
 
         // Also register globally
