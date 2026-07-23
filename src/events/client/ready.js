@@ -27,30 +27,26 @@ module.exports = {
       try {
         logger.info(`Deploying ${client.commandArray.length} Slash Commands to Discord...`);
 
-        // 1. Register all 8 commands to Global API
+        // 1. Clear Guild-level commands to prevent double entries in Discord UI
+        if (config.guildId) {
+          await rest.put(
+            Routes.applicationGuildCommands(appId, config.guildId),
+            { body: [] }
+          ).catch(() => {});
+        }
+        for (const [gId] of client.guilds.cache) {
+          await rest.put(
+            Routes.applicationGuildCommands(appId, gId),
+            { body: [] }
+          ).catch(() => {});
+        }
+
+        // 2. Register all 8 commands cleanly to Global API (Single registration, 0 duplicates)
         await rest.put(
           Routes.applicationCommands(appId),
           { body: client.commandArray }
         );
-        logger.info(`Successfully registered ${client.commandArray.length} Global Slash Commands.`);
-
-        // 2. Register all 8 commands to Private Guild ID if provided (instant update)
-        if (config.guildId) {
-          await rest.put(
-            Routes.applicationGuildCommands(appId, config.guildId),
-            { body: client.commandArray }
-          );
-          logger.info(`Successfully registered ${client.commandArray.length} Guild Slash Commands to Guild ID: ${config.guildId}`);
-        } else {
-          // Fetch all joined guilds and register instantly
-          const fetchedGuilds = await client.guilds.fetch();
-          for (const [gId] of fetchedGuilds) {
-            await rest.put(
-              Routes.applicationGuildCommands(appId, gId),
-              { body: client.commandArray }
-            ).catch(gErr => logger.error(`Failed guild registration for ${gId}:`, gErr));
-          }
-        }
+        logger.info(`Successfully registered ${client.commandArray.length} Slash Commands Globally (0 duplicates).`);
       } catch (error) {
         logger.error('Error deploying slash commands:', error);
       }
