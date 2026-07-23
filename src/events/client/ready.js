@@ -25,29 +25,34 @@ module.exports = {
       const appId = client.user.id;
 
       try {
-        logger.info(`Registering ${client.commandArray.length} Slash Command(s)...`);
+        logger.info(`Deploying ${client.commandArray.length} Slash Commands to Discord...`);
 
-        // 1. Clear Global commands to eliminate duplicates in Discord UI
+        // 1. Register all 8 commands to Global API
         await rest.put(
           Routes.applicationCommands(appId),
-          { body: [] }
-        ).catch(() => {});
-        logger.info('Cleared Global Commands (preventing duplicates).');
+          { body: client.commandArray }
+        );
+        logger.info(`Successfully registered ${client.commandArray.length} Global Slash Commands.`);
 
-        // 2. Register all 8 commands to ALL connected guilds instantly
-        for (const [guildId, guild] of client.guilds.cache) {
-          try {
+        // 2. Register all 8 commands to Private Guild ID if provided (instant update)
+        if (config.guildId) {
+          await rest.put(
+            Routes.applicationGuildCommands(appId, config.guildId),
+            { body: client.commandArray }
+          );
+          logger.info(`Successfully registered ${client.commandArray.length} Guild Slash Commands to Guild ID: ${config.guildId}`);
+        } else {
+          // Fetch all joined guilds and register instantly
+          const fetchedGuilds = await client.guilds.fetch();
+          for (const [gId] of fetchedGuilds) {
             await rest.put(
-              Routes.applicationGuildCommands(appId, guildId),
+              Routes.applicationGuildCommands(appId, gId),
               { body: client.commandArray }
-            );
-            logger.info(`Successfully registered ${client.commandArray.length} Slash Commands to Guild: ${guild.name} (${guildId})`);
-          } catch (gErr) {
-            logger.error(`Failed to register commands to Guild ${guild.name} (${guildId}):`, gErr);
+            ).catch(gErr => logger.error(`Failed guild registration for ${gId}:`, gErr));
           }
         }
       } catch (error) {
-        logger.error('Error registering slash commands:', error);
+        logger.error('Error deploying slash commands:', error);
       }
     }
   }
